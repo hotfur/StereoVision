@@ -35,7 +35,6 @@ from stereovision.point_cloud import PointCloud
 
 
 class StereoPair(object):
-
     """
     A stereo pair of cameras.
 
@@ -83,8 +82,8 @@ class StereoPair(object):
         """
         frame = self.captures[0].read()[1]
         height, width, colors = frame.shape
-        left_frame = frame[:, :int(width / 2), :]
-        right_frame = frame[:, int(width / 2):, :]
+        left_frame = frame[:, :width / 2, :]
+        right_frame = frame[:, width / 2:, :]
         return [left_frame, right_frame]
 
     def show_frames(self, wait=0):
@@ -106,7 +105,6 @@ class StereoPair(object):
 
 
 class ChessboardFinder(StereoPair):
-
     """A ``StereoPair`` that can find chessboards in its images."""
 
     def get_chessboard(self, columns, rows, show=False):
@@ -118,23 +116,18 @@ class ChessboardFinder(StereoPair):
         are shown while the cameras search for a chessboard.
         """
         found_chessboard = [False, False]
-
-        # Placeholder for corners
-        found_corners = [None, None]
-
         while not all(found_chessboard):
             frames = self.get_frames()
             if show:
                 self.show_frames(1)
             for i, frame in enumerate(frames):
                 (found_chessboard[i],
-                 found_corners[i]) = cv2.findChessboardCorners(frame, (columns, rows),
-                                                  flags=cv2.CALIB_CB_FAST_CHECK)
-        return frames, found_corners
+                 corners) = cv2.findChessboardCorners(frame, (columns, rows),
+                                                      flags=cv2.CALIB_CB_FAST_CHECK)
+        return frames
 
 
 class CalibratedPair(StereoPair):
-
     """
     A ``StereoPair`` that works with rectified images and produces point clouds.
     """

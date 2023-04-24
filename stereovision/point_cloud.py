@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with StereoVision.  If not, see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 Point cloud class generated from stereo image pairs.
 
 Classes:
@@ -23,18 +23,17 @@ Classes:
     * ``PointCloud`` - Point cloud with RGB colors
 
 .. image:: classes_point_cloud.svg
-'''
+"""
 
 import numpy as np
 
 
 class PointCloud(object):
-
     """3D point cloud generated from a stereo image pair."""
 
     #: Header for exporting point cloud to PLY
     ply_header = (
-'''ply
+        '''ply
 format ascii 1.0
 element vertex {vertex_count}
 property float x
@@ -63,7 +62,7 @@ end_header
         points = np.hstack([self.coordinates, self.colors])
         with open(output_file, 'w') as outfile:
             outfile.write(self.ply_header.format(
-                                            vertex_count=len(self.coordinates)))
+                vertex_count=len(self.coordinates)))
             np.savetxt(outfile, points, '%f %f %f %d %d %d')
 
     def filter_infinity(self):

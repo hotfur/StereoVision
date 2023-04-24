@@ -35,7 +35,6 @@ from stereovision.exceptions import ChessboardNotFoundError
 
 
 class StereoCalibration(object):
-
     """
     A stereo camera calibration.
 
@@ -138,12 +137,11 @@ class StereoCalibration(object):
             new_frames.append(cv2.remap(frames[i],
                                         self.undistortion_map[side],
                                         self.rectification_map[side],
-                                        cv2.INTER_NEAREST))
+                                        cv2.INTER_LINEAR))
         return new_frames
 
 
 class StereoCalibrator(object):
-
     """A class that calibrates stereo cameras by finding chessboard corners."""
 
     def _get_corners(self, image):
@@ -228,11 +226,11 @@ class StereoCalibrator(object):
          calib.f_mat) = cv2.stereoCalibrate(self.object_points,
                                             self.image_points["left"],
                                             self.image_points["right"],
-                                            self.image_size,
                                             calib.cam_mats["left"],
                                             calib.dist_coefs["left"],
                                             calib.cam_mats["right"],
                                             calib.dist_coefs["right"],
+                                            self.image_size,
                                             calib.rot_mat,
                                             calib.trans_vec,
                                             calib.e_mat,
@@ -243,22 +241,22 @@ class StereoCalibrator(object):
          calib.proj_mats["left"], calib.proj_mats["right"],
          calib.disp_to_depth_mat, calib.valid_boxes["left"],
          calib.valid_boxes["right"]) = cv2.stereoRectify(calib.cam_mats["left"],
-                                                      calib.dist_coefs["left"],
-                                                      calib.cam_mats["right"],
-                                                      calib.dist_coefs["right"],
-                                                      self.image_size,
-                                                      calib.rot_mat,
-                                                      calib.trans_vec,
-                                                      flags=0)
+                                                         calib.dist_coefs["left"],
+                                                         calib.cam_mats["right"],
+                                                         calib.dist_coefs["right"],
+                                                         self.image_size,
+                                                         calib.rot_mat,
+                                                         calib.trans_vec,
+                                                         flags=0)
         for side in ("left", "right"):
             (calib.undistortion_map[side],
              calib.rectification_map[side]) = cv2.initUndistortRectifyMap(
-                                                        calib.cam_mats[side],
-                                                        calib.dist_coefs[side],
-                                                        calib.rect_trans[side],
-                                                        calib.proj_mats[side],
-                                                        self.image_size,
-                                                        cv2.CV_32FC1)
+                calib.cam_mats[side],
+                calib.dist_coefs[side],
+                calib.rect_trans[side],
+                calib.proj_mats[side],
+                self.image_size,
+                cv2.CV_32FC1)
         # This is replaced because my results were always bad. Estimates are
         # taken from the OpenCV samples.
         width, height = self.image_size
@@ -283,14 +281,14 @@ class StereoCalibrator(object):
         undistorted, lines = {}, {}
         for side in sides:
             undistorted[side] = cv2.undistortPoints(
-                         np.concatenate(self.image_points[side]).reshape(-1,
-                                                                         1, 2),
-                         calibration.cam_mats[side],
-                         calibration.dist_coefs[side],
-                         P=calibration.cam_mats[side])
+                np.concatenate(self.image_points[side]).reshape(-1,
+                                                                1, 2),
+                calibration.cam_mats[side],
+                calibration.dist_coefs[side],
+                P=calibration.cam_mats[side])
             lines[side] = cv2.computeCorrespondEpilines(undistorted[side],
-                                              which_image[side],
-                                              calibration.f_mat)
+                                                        which_image[side],
+                                                        calibration.f_mat)
         total_error = 0
         this_side, other_side = sides
         for side in sides:

@@ -49,18 +49,17 @@ from stereovision.exceptions import BadBlockMatcherArgumentError
 CHESSBOARD_ARGUMENTS = ArgumentParser(add_help=False)
 CHESSBOARD_ARGUMENTS.add_argument("--rows", type=int,
                                   help="Number of inside corners in the "
-                                  "chessboard's rows.", default=9)
+                                       "chessboard's rows.", default=9)
 CHESSBOARD_ARGUMENTS.add_argument("--columns", type=int,
                                   help="Number of inside corners in the "
-                                  "chessboard's columns.", default=6)
+                                       "chessboard's columns.", default=6)
 CHESSBOARD_ARGUMENTS.add_argument("--square-size", help="Size of chessboard "
-                                  "squares in cm.", type=float, default=1.8)
-
+                                                        "squares in cm.", type=float, default=1.8)
 
 #: Command line arguments for using StereoBM rather than StereoSGBM
 STEREO_BM_FLAG = ArgumentParser(add_help=False)
 STEREO_BM_FLAG.add_argument("--use_stereobm", help="Use StereoBM rather than "
-                              "StereoSGBM block matcher.", action="store_true")
+                                                   "StereoSGBM block matcher.", action="store_true")
 
 
 def find_files(folder):
@@ -93,15 +92,17 @@ def calibrate_folder(args):
     calibrator = StereoCalibrator(args.rows, args.columns, args.square_size,
                                   (width, height))
     progress = ProgressBar(maxval=len(args.input_files),
-                          widgets=[Bar("=", "[", "]"),
-                          " ", Percentage()])
+                           widgets=[Bar("=", "[", "]"),
+                                    " ", Percentage()])
     print("Reading input files...")
     progress.start()
     while args.input_files:
         left, right = args.input_files[:2]
         img_left, im_right = cv2.imread(left), cv2.imread(right)
-        calibrator.add_corners((img_left, im_right),
-                               show_results=args.show_chessboards)
+        try:
+            calibrator.add_corners((img_left, im_right), show_results=args.show_chessboards)
+        except:
+            pass
         args.input_files = args.input_files[2:]
         progress.update(progress.maxval - len(args.input_files))
 
@@ -116,7 +117,6 @@ def calibrate_folder(args):
 
 
 class BMTuner(object):
-
     """
     A class for tuning Stereo BM settings.
 
@@ -156,7 +156,7 @@ class BMTuner(object):
         """Save current state of ``block_matcher``."""
         for parameter in self.block_matcher.parameter_maxima.keys():
             self.bm_settings[parameter].append(
-                               self.block_matcher.__getattribute__(parameter))
+                self.block_matcher.__getattribute__(parameter))
 
     def __init__(self, block_matcher, calibration, image_pair):
         """
@@ -217,16 +217,16 @@ class BMTuner(object):
         for value in unique_values:
             value_frequency[settings_list.count(value)] = value
         frequencies = value_frequency.keys()
-        frequencies.sort(reverse=True)
+        frequencies = sorted(frequencies, reverse=True)
         header = "{} value | Selection frequency".format(parameter)
         left_column_width = len(header[:-21])
         right_column_width = 21
         report.append(header)
         report.append("{}|{}".format("-" * left_column_width,
-                                    "-" * right_column_width))
+                                     "-" * right_column_width))
         for frequency in frequencies:
             left_column = str(value_frequency[frequency]).center(
-                                                             left_column_width)
+                left_column_width)
             right_column = str(frequency).center(right_column_width)
             report.append("{}|{}".format(left_column, right_column))
         # Remove newest settings
