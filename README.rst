@@ -1,6 +1,6 @@
 .. warning::
-    This repository is no longer maintained! If you'd like to take over stewardship of the code, please feel free to get in touch.
-    I am leaving it here for archival and educational purposes.
+    This repository is a fork of erget/StereoVision. Even though I have modified the code to run with Python 3.8 and OpenCV 4.2,
+    the repository will remains inactive.
 
 StereoVision: Library and utilities for 3d reconstruction from stereo cameras
 =============================================================================
