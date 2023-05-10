@@ -159,4 +159,4 @@ class CalibratedPair(StereoPair):
         points = self.block_matcher.get_3d(disparity,
                                            self.calibration.disp_to_depth_mat)
         colors = cv2.cvtColor(pair[0], cv2.COLOR_BGR2RGB)
-        return PointCloud(points, colors)
+        return disparity, PointCloud(points, colors)
