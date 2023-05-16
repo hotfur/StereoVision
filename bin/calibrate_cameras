@@ -1,0 +1,30 @@
+"""
+Calibrate cameras against pictures captured
+@Author:Vuong Kha Sieu
+"""
+
+from argparse import ArgumentParser
+from stereovision.ui_utils import calibrate_folder, CHESSBOARD_ARGUMENTS
+from stereovision.ui_utils import find_files
+
+PROGRAM_DESCRIPTION = (
+    "Calibrate cameras against chessboard captured"
+)
+
+
+def main():
+    parser = ArgumentParser(description=PROGRAM_DESCRIPTION, parents=[CHESSBOARD_ARGUMENTS])
+    parser.add_argument("output_folder", help="Folder of saved chessboard images")
+    parser.add_argument("--calibration-folder", help="Folder to save camera calibration to.")
+    args = parser.parse_args()
+    if args.calibration_folder and not args.square_size:
+        args.print_help()
+    if args.calibration_folder:
+        args.input_files = find_files(args.output_folder)
+        args.output_folder = args.calibration_folder
+        args.show_chessboards = False
+        calibrate_folder(args)
+
+
+if __name__ == "__main__":
+    main()
