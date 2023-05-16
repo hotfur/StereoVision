@@ -1,0 +1,3 @@
+progressbar~=2.5
+numpy~=1.24.3
+simplejson~=3.19.1

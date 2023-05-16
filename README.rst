@@ -2,6 +2,14 @@
     This repository is a fork of erget/StereoVision. Even though I have modified the code to run with Python 3.8 and OpenCV 4.2,
     the repository will remains inactive.
 
+If you want to install the package, please create an new conda environment with::
+
+    conda create -n stereovision python=3.8 opencv==4.2
+
+Then you have to clone the repo and install with::
+
+    conda activate stereovision && pip install -r requirements.txt && pip install -e .
+
 StereoVision: Library and utilities for 3d reconstruction from stereo cameras
 =============================================================================
 
@@ -13,10 +21,6 @@ StereoVision relies heavily on OpenCV. If you're not sure about what a given
 variable does or what values would make sense for it and no explanation is
 provided in the StereoVision documentation, refer to OpenCV's documentation in
 order to better understand how they work.
-
-It's available on PyPI, so you can install it like this::
-
-    pip install StereoVision
 
 Tutorials are available on the Stackable blog:
 

@@ -28,7 +28,7 @@ setup(name="StereoVision",
       scripts=["bin/calibrate_cameras",
                "bin/capture_chessboards",
                "bin/images_to_pointcloud",
-               "bin/capture_images_onecam"
+               "bin/capture_images_onecam",
                "bin/capture_images",
                "bin/tune_blockmatcher"],
       url="http://erget.github.com/StereoVision",
